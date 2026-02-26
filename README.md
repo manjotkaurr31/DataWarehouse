@@ -1,181 +1,251 @@
-# Data Warehouse Project – Medallion Architecture (Bronze, Silver, Gold)
+# 🏗️ Data Warehouse Project – Medallion Architecture (Bronze, Silver, Gold)
 
-## Project Overview
+## 📌 Project Overview
 
-This project implements a basic Data Warehouse using the **Medallion Architecture** pattern.
+This project implements a layered **SQL Server Data Warehouse** using the **Medallion Architecture** pattern. The system integrates data from multiple enterprise sources (CRM and ERP), processes it through structured transformation layers, and exposes business-ready views for analytics and reporting.
 
-The pipeline ingests raw data from static source files, processes it through structured transformation layers, and produces analytics-ready tables for reporting.
+### 🎯 Objectives
 
-The objective of this project is to simulate a real-world batch ETL workflow and demonstrate understanding of:
-
-- Data warehousing fundamentals  
-- Medallion architecture  
-- Data modeling (fact & dimension tables)  
-- SQL-based transformations  
-
----
-
-## Architecture Overview
-
-The warehouse is structured into three layers:
-
-### 1. Bronze Layer (Raw Layer)
-
-- Stores raw data exactly as received from source files  
-- Minimal or no transformations  
-- Maintains original schema structure  
-- Acts as historical backup and source of truth  
-
-**Purpose:** Preserve raw data for traceability and reproducibility.
+- Implement Bronze → Silver → Gold architecture
+- Integrate CRM and ERP source systems
+- Apply structured batch ETL using stored procedures
+- Design a Star Schema model
+- Expose analytics-ready views for BI & reporting
 
 ---
 
-### 2. Silver Layer (Cleaned & Transformed Layer)
+# 🏛️ Architecture Overview
 
-- Data cleaning (null handling, type casting)  
-- Standardization and normalization  
-- Deduplication  
-- Basic business rule application  
+## 🔹 Source Systems
 
-**Purpose:** Create reliable and structured datasets suitable for analytical modeling.
+- **CRM**
+  - `crm_sales_details`
+  - `crm_cust_info`
+  - `crm_prd_info`
 
----
+- **ERP**
+  - `erp_cust_az12`
+  - `erp_loc_a101`
+  - `erp_px_cat_g1v2`
 
-### 3. Gold Layer (Analytics Layer)
-
-- Contains fact and dimension tables  
-- Structured using star schema  
-- Optimized for analytical queries  
-
-**Purpose:** Provide reporting-ready data for BI tools and analytics.
+Data originates as structured CSV files and is loaded into SQL Server.
 
 ---
 
-## End-to-End Data Flow
+## 🥉 Bronze Layer – Raw Data (Tables)
+
+📂 Scripts:
+```
+scripts/bronze/
+    ├── ddl_bronze.sql
+    └── proc_load_bronze.sql
+```
+
+### Responsibilities
+
+- Stores raw CRM & ERP data
+- No transformations
+- Full load / truncate-insert pattern
+- Schema remains as-is
+
+✔ Object Type: **Tables**  
+✔ Load Method: Stored Procedure  
+❌ No transformations  
+
+Bronze acts as the immutable staging layer.
+
+---
+
+## 🥈 Silver Layer – Cleaned & Standardized (Tables)
+
+📂 Scripts:
+```
+scripts/silver/
+    ├── ddl_silver.sql
+    └── proc_load_silver.sql
+```
+
+### Responsibilities
+
+- Data cleansing
+- Standardization
+- Normalization
+- Derived columns
+- CRM + ERP integration logic
+
+✔ Object Type: **Tables**  
+✔ Load Method: Stored Procedure  
+✔ Transformations applied  
+
+This layer prepares structured, reliable datasets for modeling.
+
+---
+
+## 🥇 Gold Layer – Business Ready (Views)
+
+📂 Scripts:
+```
+scripts/gold/
+    └── ddl_gold.sql
+```
+
+### Responsibilities
+
+- Star schema implementation
+- Fact & Dimension exposure
+- Business logic calculations
+- Aggregation-ready data
+
+✔ Object Type: **Views**  
+❌ No direct load  
+✔ Built on top of Silver tables  
+
+Gold provides analytics-ready objects for:
+
+- 📊 BI & Reporting  
+- 🔍 Ad-hoc SQL  
+- 🤖 Machine Learning  
+
+---
+
+# 🔄 End-to-End Data Flow
 
 ```mermaid
-graph TD
-    A[Source Files - CSV] --> B[Bronze Layer - Raw Tables]
-    B --> C[Silver Layer - Cleaned & Standardized]
-    C --> D[Gold Layer - Fact & Dimension Tables]
+graph LR
+    A[CRM & ERP Sources] --> B[Bronze Tables]
+    B --> C[Silver Tables]
+    C --> D[Gold Views]
+    D --> E[BI / Analytics / ML]
 ```
 
 ---
 
-## Layer-wise Structure (Hierarchy View)
+# 🧩 Data Modeling – Star Schema
+
+The Gold layer exposes a **Star Schema** model:
+
+## ⭐ Fact View
+
+### `gold.fact_sales`
+
+Grain:
+> One row per order per product per customer
+
+Includes:
+- order_number
+- product_key
+- customer_key
+- order_date
+- shipping_date
+- sales_amount
+- quantity
+- price
+
+🧮 Sales Calculation:
+```
+Sales = Quantity × Price
+```
+
+---
+
+## 📐 Dimension Views
+
+### `gold.dim_customers`
+- customer_key (PK)
+- customer_id
+- customer_number
+- first_name
+- last_name
+- country
+- gender
+- birthdate
+
+### `gold.dim_products`
+- product_key (PK)
+- product_id
+- product_name
+- category
+- subcategory
+- cost
+- product_line
+- start_date
+
+---
+
+# 🗂️ Repository Structure
 
 ```
-Data Warehouse
-├── Bronze
-│   ├── raw_customers
-│   └── raw_orders
+scripts/
 │
-├── Silver
-│   ├── cleaned_customers
-│   └── cleaned_orders
+├── init_database.sql
 │
-└── Gold
-    ├── dim_customer
-    ├── dim_product
-    └── fact_sales
+├── bronze/
+│   ├── ddl_bronze.sql
+│   └── proc_load_bronze.sql
+│
+├── silver/
+│   ├── ddl_silver.sql
+│   └── proc_load_silver.sql
+│
+└── gold/
+    └── ddl_gold.sql
 ```
 
 ---
 
-## Data Modeling
+# ▶️ Execution Order
 
-The Gold layer follows a **Star Schema** design.
+1. Run `init_database.sql`
+2. Execute Bronze DDL
+3. Execute Silver DDL
+4. Execute Gold DDL
+5. Run Bronze load procedure
+6. Run Silver load procedure
 
-### Fact Table
-
-- Stores measurable business metrics  
-- Defined at a specific grain  
-
-**Example Grain:**  
-One row per transaction per customer per product per date.
-
-### Dimension Tables
-
-- Provide descriptive attributes  
-- Used for filtering and grouping in analytics  
-- Linked to fact table using foreign keys  
-
-This structure supports efficient aggregation and reporting.
+Gold views will automatically reflect updated data.
 
 ---
 
-## Tech Stack
+# 🛠️ Tech Stack
 
-- SQL (Structured Query Language)  
-- Relational Database System (SQL Server / PostgreSQL / MySQL)  
-- Static file ingestion (CSV-based)  
-- Query execution via SQL client  
-
----
-
-## Key Concepts Implemented
-
-- Medallion architecture (Bronze → Silver → Gold)  
-- Batch ETL processing  
-- Data transformation using SQL  
-- Star schema modeling  
-- Fact and dimension design  
-- Layered data refinement  
+- Microsoft SQL Server
+- Microfodt SSMS
+- T-SQL
+- Stored Procedures
+- Batch Processing
+- Star Schema Modeling
 
 ---
 
-## Project Structure
+# ⚠️ Current Limitations
 
-```
-/scripts
-    ├── create_database.sql
-    ├── bronze_layer.sql
-    ├── silver_layer.sql
-    ├── gold_layer.sql
-/data
-    ├── source_files.csv
-/images
-    ├── architecture.png   (optional)
-/README.md
-```
+- Static batch loading only
+- No incremental load
+- No CDC (Change Data Capture)
+- No orchestration tool
+- No automated data quality framework
 
 ---
 
-## How to Run
+# 🚀 Future Improvements
 
-1. Create the database.  
-2. Execute table creation scripts for Bronze, Silver, and Gold layers.  
-3. Load source data into Bronze tables.  
-4. Run transformation scripts in sequence:
-   - Bronze → Silver  
-   - Silver → Gold  
-5. Query Gold layer tables for analytics and reporting.  
-
----
-
-## Limitations
-
-- Static batch loading only  
-- No incremental loading  
-- No change data capture (CDC)  
-- No handling of late-arriving data  
-- No schema evolution support  
-- No orchestration or scheduling tool  
+- Incremental load strategy
+- Logging & audit framework
+- Error handling in procedures
+- Late-arriving dimension handling
+- Airflow / job scheduler integration
+- Cloud warehouse deployment
 
 ---
 
-## Future Improvements
+# 🎓 Learning Outcome
 
-- Implement incremental load logic  
-- Add data validation and quality checks  
-- Handle late-arriving records  
-- Add logging and audit tables  
-- Automate pipeline with orchestration tool (e.g., Airflow)  
-- Deploy to cloud warehouse (e.g., Snowflake, BigQuery)  
-- Add streaming ingestion capability  
+This project demonstrates:
 
----
+- Enterprise-style layered warehouse design
+- CRM + ERP data integration
+- Structured SQL-based ETL
+- Star schema modeling
+- View-based analytics exposure
 
-## Learning Outcome
-
-This project demonstrates foundational knowledge of data warehousing principles, layered architecture design, and SQL-based transformation workflows. It serves as a base for building more advanced, production-grade data engineering systems.
+It forms a strong foundation for building production-grade, scalable data engineering systems.
