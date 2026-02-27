@@ -142,7 +142,7 @@ BEGIN
 			sls_quantity,
 			CASE 
 				WHEN sls_price IS NULL OR sls_price <= 0 
-					THEN sls_sales / NULLIF(sls_quantity, 0)
+					THEN (ABS(sls_sales) / NULLIF(sls_quantity, 0))
 				ELSE sls_price  -- Derive price if original value is invalid
 			END AS sls_price
 		FROM bronze.crm_sales_details;
