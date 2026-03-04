@@ -2,7 +2,7 @@
 
 ## 📌 Project Overview
 
-This project implements a layered **SQL Server Data Warehouse** using the **Medallion Architecture** pattern. The system integrates data from multiple enterprise sources (CRM and ERP), processes it through structured transformation layers, and exposes business-ready views for analytics and reporting.
+This project implements a layered **SQL Server Data Warehouse** using the **Medallion Architecture** pattern. The system integrates data from multiple enterprise sources (CRM and ERP), processes it through structured transformation layers, and exposes business-ready tables for analytics and reporting.
 
 ### 🎯 Objectives
 
@@ -10,7 +10,7 @@ This project implements a layered **SQL Server Data Warehouse** using the **Meda
 - Integrate CRM and ERP source systems
 - Apply structured batch ETL using stored procedures
 - Design a Star Schema model
-- Expose analytics-ready views for BI & reporting
+- Expose analytics-ready tables for BI & reporting
 
 ---
 
@@ -81,12 +81,13 @@ This layer prepares structured, reliable datasets for modeling.
 
 ---
 
-## 🥇 Gold Layer – Business Ready (Views)
+## 🥇 Gold Layer – Business Ready (Tables)
 
 📂 Scripts:
 ```
 scripts/gold/
     └── ddl_gold.sql
+    └── proc_load_gold.sql
 ```
 
 ### Responsibilities
@@ -96,8 +97,8 @@ scripts/gold/
 - Business logic calculations
 - Aggregation-ready data
 
-✔ Object Type: **Views**  
-❌ No direct load  
+✔ Object Type: **Tables**  
+✔ Load Method: Stored Procedure 
 ✔ Built on top of Silver tables  
 
 Gold provides analytics-ready objects for:
@@ -114,7 +115,7 @@ Gold provides analytics-ready objects for:
 graph LR
     A[CRM & ERP Sources] --> B[Bronze Tables]
     B --> C[Silver Tables]
-    C --> D[Gold Views]
+    C --> D[Gold Tables]
     D --> E[BI / Analytics / ML]
 ```
 
@@ -124,7 +125,7 @@ graph LR
 
 The Gold layer exposes a **Star Schema** model:
 
-## ⭐ Fact View
+## ⭐ Fact Table
 
 ### `gold.fact_sales`
 
@@ -132,7 +133,7 @@ Grain:
 > One row per order per product per customer
 
 Includes:
-- order_number
+- order_number 
 - product_key
 - customer_key
 - order_date
@@ -148,10 +149,10 @@ Sales = Quantity × Price
 
 ---
 
-## 📐 Dimension Views
+## 📐 Dimension Tables
 
 ### `gold.dim_customers`
-- customer_key (PK)
+- customer_key (PK/SK)
 - customer_id
 - customer_number
 - first_name
@@ -161,7 +162,7 @@ Sales = Quantity × Price
 - birthdate
 
 ### `gold.dim_products`
-- product_key (PK)
+- product_key (PK/SK)
 - product_id
 - product_name
 - category
@@ -189,6 +190,7 @@ scripts/
 │
 └── gold/
     └── ddl_gold.sql
+    └── proc_load_gold.sql
 ```
 
 ---
@@ -201,8 +203,9 @@ scripts/
 4. Execute Gold DDL
 5. Run Bronze load procedure
 6. Run Silver load procedure
+7. Run Gold load procedure
 
-Gold views will automatically reflect updated data.
+Gold Tables will automatically reflect updated data.
 
 ---
 
@@ -214,16 +217,6 @@ Gold views will automatically reflect updated data.
 - Stored Procedures
 - Batch Processing
 - Star Schema Modeling
-
----
-
-# ⚠️ Current Limitations
-
-- Static batch loading only
-- No incremental load
-- No CDC (Change Data Capture)
-- No orchestration tool
-- No automated data quality framework
 
 ---
 
@@ -246,6 +239,6 @@ This project demonstrates:
 - CRM + ERP data integration
 - Structured SQL-based ETL
 - Star schema modeling
-- View-based analytics exposure
+- Analytics exposure
 
 It forms a strong foundation for building production-grade, scalable data engineering systems.
