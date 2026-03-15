@@ -48,9 +48,9 @@ scripts/bronze/
 - Full load / truncate-insert pattern
 - Schema remains as-is
 
-✔ Object Type: **Tables**  
-✔ Load Method: Stored Procedure  
-x No transformations  
+✓ Object Type: **Tables**  
+✓ Load Method: Stored Procedure  
+✖ No transformations  
 
 Bronze acts as the immutable staging layer.
 
@@ -73,9 +73,9 @@ scripts/silver/
 - Derived columns
 - CRM + ERP integration logic
 
-✔ Object Type: **Tables**  
-✔ Load Method: Stored Procedure  
-✔ Transformations applied  
+✓ Object Type: **Tables**  
+✓ Load Method: Stored Procedure  
+✓ Transformations applied  
 
 This layer prepares structured, reliable datasets for modeling.
 
@@ -97,9 +97,9 @@ scripts/gold/
 - Business logic calculations
 - Aggregation-ready data
 
-✔ Object Type: **Tables**  
-✔ Load Method: Stored Procedure 
-✔ Built on top of Silver tables  
+✓ Object Type: **Tables**  
+✓ Load Method: Stored Procedure 
+✓ Built on top of Silver tables  
 
 Gold provides analytics-ready objects for:
 
