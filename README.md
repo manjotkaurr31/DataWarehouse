@@ -1,10 +1,10 @@
-# 🏗️ Data Warehouse Project – Medallion Architecture (Bronze, Silver, Gold)
+# Data Warehouse Project – Medallion Architecture (Bronze, Silver, Gold)
 
-## 📌 Project Overview
+## Project Overview
 
 This project implements a layered **SQL Server Data Warehouse** using the **Medallion Architecture** pattern. The system integrates data from multiple enterprise sources (CRM and ERP), processes it through structured transformation layers, and exposes business-ready tables for analytics and reporting.
 
-### 🎯 Objectives
+### Objectives
 
 - Implement Bronze → Silver → Gold architecture
 - Integrate CRM and ERP source systems
@@ -14,9 +14,9 @@ This project implements a layered **SQL Server Data Warehouse** using the **Meda
 
 ---
 
-# 🏛️ Architecture Overview
+# Architecture Overview
 
-## 🔹 Source Systems
+## Source Systems
 
 - **CRM**
   - `crm_sales_details`
@@ -34,7 +34,7 @@ Data originates as structured CSV files and is loaded into SQL Server.
 
 ## 🥉 Bronze Layer – Raw Data (Tables)
 
-📂 Scripts:
+Scripts:
 ```
 scripts/bronze/
     ├── ddl_bronze.sql
@@ -50,7 +50,7 @@ scripts/bronze/
 
 ✔ Object Type: **Tables**  
 ✔ Load Method: Stored Procedure  
-❌ No transformations  
+x No transformations  
 
 Bronze acts as the immutable staging layer.
 
@@ -58,7 +58,7 @@ Bronze acts as the immutable staging layer.
 
 ## 🥈 Silver Layer – Cleaned & Standardized (Tables)
 
-📂 Scripts:
+Scripts:
 ```
 scripts/silver/
     ├── ddl_silver.sql
@@ -83,7 +83,7 @@ This layer prepares structured, reliable datasets for modeling.
 
 ## 🥇 Gold Layer – Business Ready (Tables)
 
-📂 Scripts:
+Scripts:
 ```
 scripts/gold/
     └── ddl_gold.sql
@@ -103,13 +103,13 @@ scripts/gold/
 
 Gold provides analytics-ready objects for:
 
-- 📊 BI & Reporting  
-- 🔍 Ad-hoc SQL  
-- 🤖 Machine Learning  
+- BI & Reporting  
+- Ad-hoc SQL  
+- Machine Learning  
 
 ---
 
-# 🔄 End-to-End Data Flow
+# End-to-End Data Flow
 
 ```mermaid
 graph LR
@@ -121,11 +121,11 @@ graph LR
 
 ---
 
-# 🧩 Data Modeling – Star Schema
+# Data Modeling – Star Schema
 
 The Gold layer exposes a **Star Schema** model:
 
-## ⭐ Fact Table
+## Fact Table
 
 ### `gold.fact_sales`
 
@@ -142,14 +142,14 @@ Includes:
 - quantity
 - price
 
-🧮 Sales Calculation:
+Sales Calculation:
 ```
 Sales = Quantity × Price
 ```
 
 ---
 
-## 📐 Dimension Tables
+## Dimension Tables
 
 ### `gold.dim_customers`
 - customer_key (PK/SK)
@@ -173,7 +173,7 @@ Sales = Quantity × Price
 
 ---
 
-# 🗂️ Repository Structure
+# Repository Structure
 
 ```
 scripts/
@@ -195,7 +195,7 @@ scripts/
 
 ---
 
-# ▶️ Execution Order
+# Execution Order
 
 1. Run `init_database.sql`
 2. Execute Bronze DDL
@@ -209,7 +209,7 @@ Gold Tables will automatically reflect updated data.
 
 ---
 
-# 🛠️ Tech Stack
+# Tech Stack
 
 - Microsoft SQL Server
 - Microfodt SSMS
@@ -220,7 +220,7 @@ Gold Tables will automatically reflect updated data.
 
 ---
 
-# 🚀 Future Improvements
+# Future Improvements
 
 - Incremental load strategy
 - Logging & audit framework
@@ -231,7 +231,7 @@ Gold Tables will automatically reflect updated data.
 
 ---
 
-# 🎓 Learning Outcome
+# Learning Outcome
 
 This project demonstrates:
 
