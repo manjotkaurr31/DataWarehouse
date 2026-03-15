@@ -50,7 +50,7 @@ scripts/bronze/
 
 ✓ Object Type: **Tables**  
 ✓ Load Method: Stored Procedure  
-✖ No transformations  
+× No transformations  
 
 Bronze acts as the immutable staging layer.
 
