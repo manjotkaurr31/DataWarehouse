@@ -117,7 +117,7 @@ Gold provides analytics-ready objects for:
 | CSV Sources | ---> | Bronze Tables | ---> | Silver Tables | ---> | Gold Tables  | ---> | BI / Analytics / ML|
 |             |      |               |      |               |      |              |      |                    |
 +-------------+      +---------------+      +---------------+      +--------------+      +--------------------+
-<\pre>
+</pre>
 
 ---
 
