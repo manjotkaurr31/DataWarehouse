@@ -113,7 +113,7 @@ Gold provides analytics-ready objects for:
 
 ```mermaid
 graph LR
-    A[CRM & ERP Sources] --> B[Bronze Tables]
+    A[CSV Sources] --> B[Bronze Tables]
     B --> C[Silver Tables]
     C --> D[Gold Tables]
     D --> E[BI / Analytics / ML]
