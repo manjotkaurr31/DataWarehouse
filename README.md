@@ -241,4 +241,4 @@ This project demonstrates:
 - Star schema modeling
 - Analytics exposure
 
-It forms a strong foundation for building production-grade, scalable data engineering systems.
+It forms a strong foundation for building production-grade, scalable data engineering systems. To see in-dept data analysis such as CLV, Time-Series trends, Product Performance, Customer segmentation etc upon this datawarehouse's data visit [here](https://github.com/manjotkaurr31/advance-SQL-retail-analysis).
