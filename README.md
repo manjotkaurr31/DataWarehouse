@@ -111,13 +111,13 @@ Gold provides analytics-ready objects for:
 
 # End-to-End Data Flow
 
-```mermaid
-graph LR
-    A[CSV Sources] --> B[Bronze Tables]
-    B --> C[Silver Tables]
-    C --> D[Gold Tables]
-    D --> E[BI / Analytics / ML]
-```
+<pre>
++-------------+      +---------------+      +---------------+      +--------------+      +--------------------+
+|             |      |               |      |               |      |              |      |                    |
+| CSV Sources | ---> | Bronze Tables | ---> | Silver Tables | ---> | Gold Tables  | ---> | BI / Analytics / ML|
+|             |      |               |      |               |      |              |      |                    |
++-------------+      +---------------+      +---------------+      +--------------+      +--------------------+
+<\pre>
 
 ---
 
